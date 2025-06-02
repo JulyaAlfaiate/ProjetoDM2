@@ -26,16 +26,18 @@ export default function Home() {
   const [pets, setPets] = useState([]);
   const [filteredPets, setFilteredPets] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('clinica'); // 'clinica' ou 'pets'
+  const [activeTab, setActiveTab] = useState('jobes'); // 'jobes' ou 'pets'
 
-  const categories = [
-    { label: "Todos", icon: "paw" },
-    { label: "Cachorros", icon: "dog" },
-    { label: "Gatos", icon: "cat" },
-    { label: "Aves", icon: "crow" },
-    { label: "Outros", icon: "kiwi-bird" }
-  ];
-
+   const categories = [
+    { label: "Todos", icon: "clipboard-list" },
+    { label: "Bombeiro Hidráulico", icon: "water" },
+    { label: "Limpador de Vidros", icon: "window-restore" },
+    { label: "Serviços Gerais", icon: "tools" },
+    { label: "Borracheiro Móvel", icon: "car" },
+    { label: "Aulas Particulares", icon: "book" },
+    { label: "Cabeleireiro a Domicílio", icon: "cut" },
+    { label: "Outros", icon:"menu" }
+   ]
   const [activeCategory, setActiveCategory] = useState("Todos");
 
   const fetchPets = async () => {
@@ -106,7 +108,7 @@ export default function Home() {
       </TouchableOpacity>
       <View style={styles.petInfo}>
         <Text style={styles.petName}>{item.name}</Text>
-        <Text style={styles.petBreed}>{item.breed || "Raça não especificada"}</Text>
+        <Text style={styles.petBreed}>{item.breed || "Serviço não encontrado"}</Text>
         <View style={styles.petDetails}>
           <Ionicons name="location-outline" size={14} color={colors.gray} />
           <Text style={styles.details}> {item.location || "Local não informado"}</Text>
@@ -132,42 +134,43 @@ if (loading) {
         />
         <View style={styles.headerTextContainer}>
           <Text style={styles.welcomeText}>Bem-vindo à</Text>
-          <Text style={styles.clinicName}>Clínica Veterinária PetLove</Text>
+          <Text style={styles.clinicName}>Nerak, rede de serviços freelancer!</Text>
         </View>
       </View>
 
       {/* Tabs */}
       <View style={styles.tabContainer}>
         <TouchableOpacity
-          style={[styles.tabButton, activeTab === 'clinica' && styles.activeTab]}
-          onPress={() => setActiveTab('clinica')}
-        >
-          <FontAwesome5 name="clinic-medical" size={20} color={activeTab === 'clinica' ? '#fff' : colors.primary} />
-          <Text style={[styles.tabText, activeTab === 'clinica' && styles.activeTabText]}>Nossa Clínica</Text>
+          style={[styles.tabButton, activeTab === 'jobes' && styles.activeTab]}
+          onPress={() => setActiveTab('jobes')}
+        > 
+          <FontAwesome5 name="clinic-medical" size={20} color={activeTab === 'jobes' ? '#fff' : colors.primary} />
+          <Text style={[styles.tabText, activeTab === 'jobes' && styles.activeTabText]}>Grupo Nerak</Text> 
         </TouchableOpacity>
         
         <TouchableOpacity
           style={[styles.tabButton, activeTab === 'pets' && styles.activeTab]}
           onPress={() => setActiveTab('pets')}
         >
-          <FontAwesome5 name="paw" size={20} color={activeTab === 'pets' ? '#fff' : colors.primary} />
-          <Text style={[styles.tabText, activeTab === 'pets' && styles.activeTabText]}>Pets para Adoção</Text>
+          <FontAwesome5 name="tools" size={20} color={activeTab === 'pets' ? '#fff' : colors.primary} />
+          <Text style={[styles.tabText, activeTab === 'pets' && styles.activeTabText]}>Serviços disponíveis</Text>
         </TouchableOpacity>
       </View>
 
-      {activeTab === 'clinica' ? (
+      {activeTab === 'jobes' ? (
         <ScrollView contentContainerStyle={styles.clinicContainer}>
           <Image
             source={{ uri: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee' }}
             style={styles.clinicImage}
+            // fazer alterações em nossos serviços
           />
-          <Text style={styles.sectionTitle}>Sobre Nossa Clínica</Text>
+          <Text style={styles.sectionTitle}>Sobre Nós</Text>
           <Text style={styles.clinicDescription}>
-            A Clínica Veterinária PetLove oferece os melhores cuidados para seu pet, 
-            com profissionais especializados e equipamentos de última geração.
+            Nossa rede de serviços Nerak, é focada em ser um facilitador entre você e o prestador de serviços. 
+            Aqui o seu problema sempre tem solução!
           </Text>
-          
-          <Text style={styles.sectionTitle}>Nossos Serviços</Text>
+    
+          <Text style={styles.sectionTitle}>Nossas Disponibilidades</Text>
           <View style={styles.serviceItem}>
             <Ionicons name="medkit-outline" size={24} color={colors.primary} />
             <Text style={styles.serviceText}>Consultas e Exames</Text>
@@ -186,7 +189,7 @@ if (loading) {
             onPress={handleCallButton}
           >
             <FontAwesome5 name="calendar-alt" size={16} color="#fff" />
-            <Text style={styles.scheduleButtonText}>Agendar Consulta</Text>
+            <Text style={styles.scheduleButtonText}>Agendar Serviço</Text>
           </TouchableOpacity>
         </ScrollView>
       ) : (
@@ -236,7 +239,7 @@ if (loading) {
           ) : (
             <View style={styles.emptyContainer}>
               <Ionicons name="paw-outline" size={48} color={colors.gray} />
-              <Text style={styles.emptyText}>Nenhum pet encontrado</Text>
+              <Text style={styles.emptyText}>Nenhum serviço encontrado</Text>
             </View>
           )}
         </View>
