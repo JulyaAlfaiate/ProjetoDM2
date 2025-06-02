@@ -13,15 +13,15 @@ import {
 } from "react-native";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../services/firebase";
-import { AuthenticatedUserContext } from "../../App";
+import { AuthenticatedUserContext } from "../../App"; // Verifique o caminho se App.js está na raiz
 
-const backImage = require("../../assets/login.png");
+const backImage = require("../../assets/login.png"); // Mantenha ou altere a imagem
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { setUser } = useContext(AuthenticatedUserContext); // Use o contexto
+  const { setUser } = useContext(AuthenticatedUserContext); 
 
   const onHandleLogin = async () => {
     if (!email || !password) {
@@ -34,6 +34,7 @@ export default function Login({ navigation }) {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       setUser(userCredential.user); 
       console.log("Login success");
+      // navigation.replace("Home"); // Descomente se quiser navegar direto para Home
     } catch (err) {
       Alert.alert("Erro no login", err.message);
     } finally {
@@ -56,6 +57,7 @@ export default function Login({ navigation }) {
           autoFocus={true}
           value={email}
           onChangeText={(text) => setEmail(text)}
+          placeholderTextColor="#555555"
         />
         <TextInput
           style={styles.input}
@@ -66,6 +68,7 @@ export default function Login({ navigation }) {
           textContentType="password"
           value={password}
           onChangeText={(text) => setPassword(text)}
+          placeholderTextColor="#555555"
         />
         <TouchableOpacity 
           style={styles.button} 
@@ -73,15 +76,15 @@ export default function Login({ navigation }) {
           disabled={isLoading}
         >
           {isLoading ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color="#ffffff" /> // Cor Branca para indicador no botão
           ) : (
-            <Text style={{fontWeight: 'bold', color: '#fff', fontSize: 18}}>Entrar</Text>
+            <Text style={{fontWeight: 'bold', color: '#ffffff', fontSize: 18}}>Entrar</Text>
           )}
         </TouchableOpacity>
         <View style={{marginTop: 20, flexDirection: 'row', alignItems: 'center', alignSelf: 'center'}}>
-          <Text style={{color: 'gray', fontWeight: '600', fontSize: 14}}>Não possui uma conta? </Text>
+          <Text style={{color: '#000000', fontWeight: '600', fontSize: 14}}>Não possui uma conta? </Text>
           <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
-            <Text style={{color: '#f57c00', fontWeight: '600', fontSize: 14}}> Cadastre-se</Text>
+            <Text style={{color: '#4169e1', fontWeight: '600', fontSize: 14}}> Cadastre-se</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -93,22 +96,23 @@ export default function Login({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#ffffff", // Cor Branca
   },
   title: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: "black",
+    color: "#000000", // Cor Preta
     alignSelf: "center",
     paddingBottom: 24,
   },
   input: {
-    backgroundColor: "#F6F7FB",
+    backgroundColor: "#e5e4fb", // Cor Secundária
     height: 58,
     marginBottom: 20,
     fontSize: 16,
     borderRadius: 10,
     padding: 12,
+    color: "#000000", // Texto Preto
   },
   backImage: {
     width: "100%",
@@ -122,7 +126,7 @@ const styles = StyleSheet.create({
     height: '75%',
     position: "absolute",
     bottom: 0,
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff', // Cor Branca
     borderTopLeftRadius: 60,
   },
   form: {
@@ -131,7 +135,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 30,
   },
   button: {
-    backgroundColor: '#f57c00',
+    backgroundColor: '#4169e1', // Cor Principal
     height: 58,
     borderRadius: 10,
     justifyContent: 'center',

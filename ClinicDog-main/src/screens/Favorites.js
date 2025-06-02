@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, Image } from 'react-native';
-import { getPets } from '../services/petsApi';
+import { getPets } from '../services/petsApi'; // Assumindo que foi renomeado para getServices ou similar
 
 export default function Favorites() {
   const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
     async function loadFavs() {
-      const pets = await getPets();
+      // const services = await getServices(); // Exemplo se renomeado
+      const pets = await getPets(); // Mantendo por enquanto
       setFavorites(pets.filter(p => p.favorited));
     }
     loadFavs();
@@ -23,7 +24,7 @@ export default function Favorites() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Pets Favoritados</Text>
+      <Text style={styles.title}>Favoritos</Text> 
       <FlatList
         data={favorites}
         keyExtractor={item => item.id}
@@ -37,7 +38,7 @@ export default function Favorites() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff', // Cor Branca
     paddingTop: 40,
     paddingHorizontal: 16,
   },
@@ -45,12 +46,13 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 16,
+    color: '#000000', // Texto Preto em fundo branco
   },
   list: {
     paddingBottom: 40,
   },
   card: {
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#e5e4fb', // Cor Secundária
     padding: 16,
     borderRadius: 12,
     marginBottom: 16,
@@ -64,9 +66,10 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#000000', // Texto Preto em fundo secundário
   },
   details: {
-    color: '#555',
+    color: '#333333', // Texto Preto (ou cinza escuro) em fundo secundário
     marginTop: 4,
   },
 });

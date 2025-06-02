@@ -71,7 +71,7 @@ export default function EditProfile({ navigation }) {
           onPress={() => navigation.goBack()}
           style={styles.backButton}
         >
-          <Ionicons name="chevron-back" size={28} color="#f97316" />
+          <Ionicons name="chevron-back" size={28} color="#4169e1" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Editar Perfil</Text>
       </View>
@@ -83,7 +83,7 @@ export default function EditProfile({ navigation }) {
             style={styles.avatar}
           />
           <Text
-            style={{ textAlign: "center", color: "#555", marginBottom: 20 }}
+            style={{ textAlign: "center", color: "#333333", marginBottom: 20 }} // Texto preto em fundo branco
           >
             Toque para alterar a imagem
           </Text>
@@ -93,6 +93,7 @@ export default function EditProfile({ navigation }) {
           value={name}
           onChangeText={setName}
           style={styles.input}
+          placeholderTextColor="#555"
         />
         <TextInput
           placeholder="Telefone"
@@ -100,6 +101,7 @@ export default function EditProfile({ navigation }) {
           onChangeText={setPhone}
           keyboardType="phone-pad"
           style={styles.input}
+          placeholderTextColor="#555"
         />
       
         <TouchableOpacity onPress={handleSave} style={styles.button}>
@@ -113,7 +115,7 @@ export default function EditProfile({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#ffffff", // Cor Branca
   },
   header: {
     paddingTop: 50,
@@ -121,7 +123,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "#ffffff", // Cor Branca
   },
   backButton: {
     marginRight: 12,
@@ -129,7 +131,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#f97316",
+    color: "#4169e1", // Cor Principal
   },
   content: {
     padding: 20,
@@ -139,27 +141,29 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 60,
     alignSelf: "center",
-    marginBottom: 30,
+    marginBottom: 10, // Ajustado para dar espaço ao texto abaixo
     borderWidth: 2,
-    borderColor: "#f97316",
+    borderColor: "#4169e1", // Cor Principal
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#cccccc", // Cinza para borda
+    backgroundColor: "#e5e4fb", // Cor Secundária para fundo do input
     borderRadius: 10,
     padding: 14,
     fontSize: 16,
     marginBottom: 20,
+    color: "#000000", // Texto preto
   },
   button: {
-    backgroundColor: "#f97316",
+    backgroundColor: "#4169e1", // Cor Principal
     padding: 16,
     borderRadius: 10,
     alignItems: "center",
     marginTop: 10,
   },
   buttonText: {
-    color: "#fff",
+    color: "#ffffff", // Cor Branca (texto sobre fundo principal)
     fontWeight: "bold",
     fontSize: 16,
   },
