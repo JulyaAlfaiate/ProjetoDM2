@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, Image } from 'react-native';
-import { getPets } from '../services/petsApi'; // Assumindo que foi renomeado para getServices ou similar
+import { freelancerApi } from '../services/freelancerApi'; 
 
 export default function Favorites() {
   const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
     async function loadFavs() {
-      // const services = await getServices(); // Exemplo se renomeado
-      const pets = await getPets(); // Mantendo por enquanto
+  
+      const pets = await getPets(); 
       setFavorites(pets.filter(p => p.favorited));
     }
     loadFavs();
@@ -66,10 +66,9 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#000000', // Texto Preto em fundo secundário
+    color: '#000000',
   },
   details: {
-    color: '#333333', // Texto Preto (ou cinza escuro) em fundo secundário
-    marginTop: 4,
+    color: '#333333', 
   },
 });

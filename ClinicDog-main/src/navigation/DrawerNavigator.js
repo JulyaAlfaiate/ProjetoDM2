@@ -30,7 +30,7 @@ const CustomDrawerContent = ({ navigation }) => {
         style={{ paddingVertical: 15, flexDirection: 'row', alignItems: 'center' }}
         onPress={() => navigation.navigate("Início")}
       >
-        <Ionicons name="home-outline" size={24} color="#f97316" />
+        <Ionicons name="home-outline" size={24} color="#5250F2" />
         <Text style={{ marginLeft: 10, fontSize: 16 }}>Início</Text>
       </TouchableOpacity>
 
@@ -38,7 +38,7 @@ const CustomDrawerContent = ({ navigation }) => {
         style={{ paddingVertical: 15, flexDirection: 'row', alignItems: 'center' }}
         onPress={() => navigation.navigate("Favoritos")}
       >
-        <AntDesign name="hearto" size={24} color="#f97316" />
+        <AntDesign name="hearto" size={24} color="#5250F2" />
         <Text style={{ marginLeft: 10, fontSize: 16 }}>Favoritos</Text>
       </TouchableOpacity>
 
@@ -46,7 +46,7 @@ const CustomDrawerContent = ({ navigation }) => {
         style={{ paddingVertical: 15, flexDirection: 'row', alignItems: 'center' }}
         onPress={() => navigation.navigate("Perfil")}
       >
-        <Ionicons name="person-outline" size={24} color="#f97316" />
+        <Ionicons name="person-outline" size={24} color="#5250F2" />
         <Text style={{ marginLeft: 10, fontSize: 16 }}>Perfil</Text>
       </TouchableOpacity>
 
@@ -55,7 +55,7 @@ const CustomDrawerContent = ({ navigation }) => {
         style={{ paddingVertical: 15, flexDirection: 'row', alignItems: 'center', marginTop: 20 }}
         onPress={handleLogout}
       >
-        <Ionicons name="log-out-outline" size={24} color="#f97316" />
+        <Ionicons name="log-out-outline" size={24} color="#5250F2" />
         <Text style={{ marginLeft: 10, fontSize: 16 }}>Sair</Text>
       </TouchableOpacity>
     </View>
@@ -67,7 +67,7 @@ export default function DrawerNavigator() {
     <Drawer.Navigator
       screenOptions={{
         headerShown: true,
-        drawerActiveTintColor: "#f97316",
+        drawerActiveTintColor: "#5250F2",
         drawerLabelStyle: { fontSize: 16 },
       }}
       drawerContent={(props) => <CustomDrawerContent {...props} />}

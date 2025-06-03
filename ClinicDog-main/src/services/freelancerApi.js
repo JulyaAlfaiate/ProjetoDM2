@@ -4,26 +4,26 @@ import {
   getDoc,
 } from "firebase/firestore";
 
-import petsData from './petsData.json';
+import servicesData from './servicesData.json'; 
 import { database } from "./firebase";
 
 
 
 const simulateApiDelay = () => new Promise(resolve => setTimeout(resolve, 800));
 
-export const getPets = async () => {
+export const getServices = async () => { 
   await simulateApiDelay();
-  return petsData;
+  return servicesData;
 };
 
 
-export const toggleFavorite = async (id) => {
+export const toggleFavorite = async (id) => { 
   await simulateApiDelay();
-  const petIndex = petsData.findIndex(pet => pet.id === id);
-  if (petIndex !== -1) {
-    petsData[petIndex].favorited = !petsData[petIndex].favorited;
+  const serviceIndex = servicesData.findIndex(service => service.id === id);
+  if (serviceIndex !== -1) {
+    servicesData[serviceIndex].favorited = !servicesData[serviceIndex].favorited;
   }
-  return [...petsData]; 
+  return [...servicesData];
 };
 
 export const createUserProfile = async (user) => {
@@ -48,10 +48,12 @@ export const getUserProfile = async (uid) => {
   
 export const getCategories = () => {
   return [
-    { label: 'Todos', icon: 'paw' },
-    { label: 'Cachorro', icon: 'dog' },
-    { label: 'Gato', icon: 'cat' },
-    { label: 'Peixe', icon: 'fish' },
-    { label: 'Pássaro', icon: 'dove' },
+    { label: "Todos", icon: "clipboard-list" },
+    { label: "Bombeiro Hidráulico", icon: "water" },
+    { label: "Limpador de Vidros", icon: "window-restore" },
+    { label: "Serviços Gerais", icon: "tools" },
+    { label: "Borracheiro Móvel", icon: "car" },
+    { label: "Aulas Particulares", icon: "book" },
+    { label: "Cabeleireiro a Domicílio", icon: "cut" },
   ];
 };

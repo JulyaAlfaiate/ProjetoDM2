@@ -5,29 +5,29 @@ import {
 } from "react-native";
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../services/firebase';
-import { createUserProfile } from "../services/petsApi";
+import { createUserProfile } from "../services/freelancerApi";
 
 const backImage = require("../../assets/login.png");
 
 export default function Signup({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false); // estado de carregamento
+  const [loading, setLoading] = useState(false); 
 
   const handleSignup = async () => {
-    setLoading(true); // inicia o loading
+    setLoading(true); 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
       await createUserProfile(user);
 
-      navigation.replace("Home"); // redireciona após o sucesso
+      navigation.replace("Home"); 
     } catch (error) {
       console.error("Erro ao cadastrar:", error.message);
       Alert.alert("Erro", error.message);
     } finally {
-      setLoading(false); // encerra o loading
+      setLoading(false); 
     }
   };
 
@@ -60,17 +60,17 @@ export default function Signup({ navigation }) {
         />
 
         {loading ? (
-          <ActivityIndicator size="large" color="#f57c00" />
+          <ActivityIndicator size="large" color="#5250F2" />
         ) : (
           <TouchableOpacity style={styles.button} onPress={handleSignup}>
-            <Text style={{ fontWeight: 'bold', color: '#fff', fontSize: 18 }}>Pronto!</Text>
+            <Text style={{ fontWeight: 'bold', color: '#fff', fontSize: 18 }}>Continuar!</Text>
           </TouchableOpacity>
         )}
 
         <View style={{ marginTop: 20, flexDirection: 'row', alignItems: 'center', alignSelf: 'center' }}>
           <Text style={{ color: 'gray', fontWeight: '600', fontSize: 14 }}>Já tem cadastro? </Text>
           <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-            <Text style={{ color: '#f57c00', fontWeight: '600', fontSize: 14 }}>Entrar</Text>
+            <Text style={{ color: '#5250F2', fontWeight: '600', fontSize: 14 }}>Entrar</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: "orange",
+    color: "black",
     alignSelf: "center",
     paddingBottom: 24,
   },
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 30,
   },
   button: {
-    backgroundColor: '#f57c00',
+    backgroundColor: '#5250F2',
     height: 58,
     borderRadius: 10,
     justifyContent: 'center',

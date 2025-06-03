@@ -11,7 +11,7 @@ import {
   Animated
 } from "react-native";
 import { auth } from "../services/firebase";
-import { getUserProfile, getPetsByUser, deletePet } from "../services/petsApi";
+import { getUserProfile, getPetsByUser, deletePet } from "../services/freelancerApi";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 

@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { AntDesign, Entypo, FontAwesome5, Ionicons } from "@expo/vector-icons";
-import { getPets, toggleFavorite } from '../services/petsApi';
+import { getPets, toggleFavorite } from '../services/freelancerApi';
 import colors from "../../colors";
 
 
@@ -26,7 +26,7 @@ export default function Home() {
   const [pets, setPets] = useState([]);
   const [filteredPets, setFilteredPets] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('jobes'); // 'jobes' ou 'pets'
+  const [activeTab, setActiveTab] = useState('jobes');
 
    const categories = [
     { label: "Todos", icon: "clipboard-list" },
@@ -36,7 +36,7 @@ export default function Home() {
     { label: "Borracheiro Móvel", icon: "car" },
     { label: "Aulas Particulares", icon: "book" },
     { label: "Cabeleireiro a Domicílio", icon: "cut" },
-    { label: "Outros", icon:"menu" }
+    
    ]
   const [activeCategory, setActiveCategory] = useState("Todos");
 
@@ -47,8 +47,8 @@ export default function Home() {
       setPets(petsData);
       setFilteredPets(petsData);
     } catch (error) {
-      console.error("Error fetching pets:", error);
-      Alert.alert("Erro", "Não foi possível carregar os pets. Tente novamente mais tarde.");
+      console.error("Error fetching:", error);
+      Alert.alert("Erro", "Não foi possível carregar. Tente novamente mais tarde.");
     } finally {
       setLoading(false);
     }

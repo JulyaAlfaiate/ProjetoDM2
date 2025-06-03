@@ -14,7 +14,7 @@ import {
   getUserProfile,
   updateUserProfile,
   uploadImageAsync,
-} from "../services/petsApi";
+} from "../services/freelancerApi";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 

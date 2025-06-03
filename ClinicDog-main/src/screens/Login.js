@@ -47,7 +47,7 @@ export default function Login({ navigation }) {
       <Image source={backImage} style={styles.backImage} />
       <View style={styles.whiteSheet} />
       <SafeAreaView style={styles.form}>
-        <Text style={styles.title}>Faça seu Login</Text>
+        <Text style={styles.title}>neraK</Text>
         <TextInput
           style={styles.input}
           placeholder="Digite seu email"
@@ -78,13 +78,13 @@ export default function Login({ navigation }) {
           {isLoading ? (
             <ActivityIndicator color="#ffffff" /> // Cor Branca para indicador no botão
           ) : (
-            <Text style={{fontWeight: 'bold', color: '#ffffff', fontSize: 18}}>Entrar</Text>
+            <Text style={{fontWeight: 'bold', color: '#ffffff', fontSize: 18}}>Continuar</Text>
           )}
         </TouchableOpacity>
         <View style={{marginTop: 20, flexDirection: 'row', alignItems: 'center', alignSelf: 'center'}}>
-          <Text style={{color: '#000000', fontWeight: '600', fontSize: 14}}>Não possui uma conta? </Text>
+          <Text style={{color: '#000000', fontWeight: '600', fontSize: 14}}>Não tem conta? </Text>
           <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
-            <Text style={{color: '#4169e1', fontWeight: '600', fontSize: 14}}> Cadastre-se</Text>
+            <Text style={{color: '#4169e1', fontWeight: '600', fontSize: 14}}> Faça seu cadastro</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -101,18 +101,18 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: "#000000", // Cor Preta
+    color: "#000000", 
     alignSelf: "center",
     paddingBottom: 24,
   },
   input: {
-    backgroundColor: "#e5e4fb", // Cor Secundária
+    backgroundColor: "#e5e4fb", 
     height: 58,
     marginBottom: 20,
     fontSize: 16,
     borderRadius: 10,
     padding: 12,
-    color: "#000000", // Texto Preto
+    color: "#000000", 
   },
   backImage: {
     width: "100%",
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 30,
   },
   button: {
-    backgroundColor: '#4169e1', // Cor Principal
+    backgroundColor: '#5250F2',
     height: 58,
     borderRadius: 10,
     justifyContent: 'center',
