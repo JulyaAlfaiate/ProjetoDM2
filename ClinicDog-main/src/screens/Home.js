@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -10,209 +10,296 @@ import {
   Linking,
   ActivityIndicator,
   Alert,
-  Dimensions
+  Dimensions,
+  RefreshControl,
+  TextInput,
+  Platform, // Added for Platform specific checks like StatusBar
+  StatusBar // Added for StatusBar height
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { AntDesign, Entypo, FontAwesome5, Ionicons } from "@expo/vector-icons";
-import { getPets, toggleFavorite } from '../services/freelancerApi';
-import colors from "../../colors";
-
-
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { AntDesign, Entypo, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { getServices, toggleFavoriteService } from '../servicess/freelancerApi'; // API functions should be updated
+import { auth } from '../servicess/firebase'; // CRITICAL: Added Firebase auth import
+import colors from "../../colors"; // Assuming colors.js exists
 
 const { width } = Dimensions.get('window');
 
 export default function Home() {
   const navigation = useNavigation();
-  const [pets, setPets] = useState([]);
-  const [filteredPets, setFilteredPets] = useState([]);
+  const [services, setServices] = useState([]);
+  const [filteredServices, setFilteredServices] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('jobes');
+  const [refreshing, setRefreshing] = useState(false);
+  const [activeTab, setActiveTab] = useState('services'); // 'services' or 'platformInfo'
+  const [searchQuery, setSearchQuery] = useState("");
 
-   const categories = [
-    { label: "Todos", icon: "clipboard-list" },
-    { label: "Bombeiro Hidráulico", icon: "water" },
-    { label: "Limpador de Vidros", icon: "window-restore" },
-    { label: "Serviços Gerais", icon: "tools" },
-    { label: "Borracheiro Móvel", icon: "car" },
-    { label: "Aulas Particulares", icon: "book" },
-    { label: "Cabeleireiro a Domicílio", icon: "cut" },
-    
-   ]
+  // Categories for freelance services
+  const serviceCategories = [
+    { label: "Todos", icon: "apps-outline" },
+    { label: "Desenvolvimento", icon: "code-slash-outline" },
+    { label: "Design Gráfico", icon: "brush-outline" },
+    { label: "Redação & Tradução", icon: "language-outline" },
+    { label: "Marketing Digital", icon: "megaphone-outline" },
+    { label: "Consultoria", icon: "people-circle-outline" },
+    { label: "Serviços Gerais", icon: "construct-outline" },
+    { label: "Aulas Particulares", icon: "book-outline" },
+  ];
   const [activeCategory, setActiveCategory] = useState("Todos");
 
-  const fetchPets = async () => {
+  // Function to fetch all services from the API
+  const fetchAllServices = async () => {
     try {
       setLoading(true);
-      const petsData = await getPets();
-      setPets(petsData);
-      setFilteredPets(petsData);
+      const servicesData = await getServices(); // Ensure getServices is implemented in your API
+      setServices(servicesData || []); // Ensure servicesData is an array
+      filterServices(servicesData || [], activeCategory, searchQuery); // Apply current filters
     } catch (error) {
-      console.error("Error fetching:", error);
-      Alert.alert("Erro", "Não foi possível carregar. Tente novamente mais tarde.");
+      console.error("Error fetching services:", error);
+      Alert.alert("Erro", "Não foi possível carregar os serviços. Tente novamente mais tarde.");
+      setServices([]); // Set to empty array on error
+      setFilteredServices([]); // Set to empty array on error
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
+  
+  // Use useFocusEffect to refresh data when the screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      fetchAllServices();
+    }, []) // Empty dependency array means it runs on focus if not already focused
+  );
 
-  useEffect(() => {
-    fetchPets();
+  // Handler for pull-to-refresh
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchAllServices();
   }, []);
 
-  const handleToggleFavorite = async (id) => {
+  // Handler to toggle a service as favorite
+  const handleToggleFavorite = async (serviceId) => {
     try {
-      const updatedPets = await toggleFavorite(id);
-      setPets(updatedPets);
-      setFilteredPets(
-        activeCategory === "Todos"
-          ? updatedPets
-          : updatedPets.filter((p) => p.category === activeCategory)
+      // Assuming toggleFavoriteService updates the backend and returns the updated service or a success status
+      await toggleFavoriteService(serviceId); // Ensure this API call is correct
+      
+      // Update local state optimistically or refetch
+      const updatedServices = services.map(s => 
+        s.id === serviceId ? { ...s, favorited: !s.favorited } : s
       );
+      setServices(updatedServices);
+      filterServices(updatedServices, activeCategory, searchQuery); // Re-apply filters
+
     } catch (error) {
-      console.error("Error escalando favorito:", error);
+      console.error("Error toggling favorite:", error);
+      Alert.alert("Erro", "Não foi possível atualizar o favorito.");
     }
   };
 
-  const filterByCategory = (category) => {
+  // Function to filter services based on category and search query
+  const filterServices = (currentServices, category, query) => {
+    let tempServices = Array.isArray(currentServices) ? [...currentServices] : []; // Defensive copy
+    
+    if (category !== "Todos") {
+      tempServices = tempServices.filter((s) => s.category === category);
+    }
+    if (query && query.trim() !== "") {
+      const lowerQuery = query.toLowerCase();
+      tempServices = tempServices.filter((s) => 
+        s.name?.toLowerCase().includes(lowerQuery) || 
+        s.description?.toLowerCase().includes(lowerQuery) ||
+        s.category?.toLowerCase().includes(lowerQuery)
+      );
+    }
+    setFilteredServices(tempServices);
+  };
+
+  // Handler for category selection
+  const handleCategoryFilter = (category) => {
     setActiveCategory(category);
-    if (category === "Todos") return setFilteredPets(pets);
-    const filtered = pets.filter((p) => p.category === category);
-    setFilteredPets(filtered);
+    filterServices(services, category, searchQuery);
   };
 
-  const handleCallButton = () => {
-    Linking.openURL(`tel:${'SEU_NUMERO_DE_TELEFONE'}`);
+  // Handler for search input change
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    filterServices(services, activeCategory, query);
   };
 
-  const renderPet = ({ item }) => (
+  // Handler for contacting the platform
+  const handleContactPlatform = () => {
+    Linking.openURL(`mailto:contato@nerakfreelancer.com?subject=Contato Plataforma Nerak`);
+  };
+
+  // Renders each service card in the list
+  const renderServiceCard = ({ item }) => (
     <TouchableOpacity
-      style={styles.petCard}
-      onPress={() => navigation.navigate("PetDetails", { pet: item })}
+      style={styles.serviceCard}
+      onPress={() => navigation.navigate("ServiceDetails", { serviceId: item.id, service: item })}
     >
-      <Image 
-        source={{ uri: item.imageUrl }} 
-        style={styles.image}
-        defaultSource={require('../../assets/default-pet.png')}
+      <Image
+        source={{ uri: item.imageUrl || 'https://placehold.co/600x400/E0E0E0/B0B0B0?text=Serviço' }}
+        style={styles.serviceImage}
+        defaultSource={require('../../assets/default-service.png')} // Ensure you have this asset
       />
       <TouchableOpacity
         style={styles.heartIcon}
         onPress={(e) => {
-          e.stopPropagation();
+          e.stopPropagation(); 
           handleToggleFavorite(item.id);
         }}
       >
         <AntDesign
           name={item.favorited ? "heart" : "hearto"}
-          size={24}
-          color={item.favorited ? "#ff4444" : "#fff"}
+          size={22}
+          color={item.favorited ? colors.danger : "#a3090e"} 
         />
       </TouchableOpacity>
-      <View style={styles.petInfo}>
-        <Text style={styles.petName}>{item.name}</Text>
-        <Text style={styles.petBreed}>{item.breed || "Serviço não encontrado"}</Text>
-        <View style={styles.petDetails}>
+      <View style={styles.serviceInfo}>
+        <Text style={styles.serviceName} numberOfLines={1}>{item.name || item.title || "Serviço Profissional"}</Text>
+        <Text style={styles.serviceCategoryName} numberOfLines={1}>{item.category || "Não categorizado"}</Text>
+        <View style={styles.serviceLocationDetails}>
           <Ionicons name="location-outline" size={14} color={colors.gray} />
-          <Text style={styles.details}> {item.location || "Local não informado"}</Text>
+          <Text style={styles.detailsText}> {item.location || "Remoto/Não informado"}</Text>
         </View>
       </View>
     </TouchableOpacity>
   );
-if (loading) {
-  return (
-    <View style={styles.loadingContainer}>
-      <ActivityIndicator size="large" color={colors.primary} />
-      <Text style={styles.loadingText}>Carregando dados...</Text>
-    </View>
-  );
-}
+
+  // Display loading indicator while data is being fetched
+  if (loading && !refreshing) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={colors.primary} />
+        <Text style={styles.loadingText}>Carregando serviços...</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      {/* Header */}
+      {/* Header Section */}
       <View style={styles.header}>
         <Image
-          source={{ uri: "https://i.pravatar.cc/300" }}
+          source={{ uri: auth.currentUser?.photoURL || "https://placehold.co/100x100/E0E0E0/B0B0B0?text=User" }}
           style={styles.profileImage}
         />
         <View style={styles.headerTextContainer}>
-          <Text style={styles.welcomeText}>Bem-vindo à</Text>
-          <Text style={styles.clinicName}>Nerak, rede de serviços freelancer!</Text>
+          <Text style={styles.welcomeText}>Bem-vindo(a) à</Text>
+          <Text style={styles.platformName}>Nerak Freelancer</Text>
         </View>
+        <TouchableOpacity onPress={() => navigation.openDrawer()} style={styles.menuButton}>
+            <Ionicons name="menu" size={30} color="#fff" />
+        </TouchableOpacity>
       </View>
 
-      {/* Tabs */}
+      {/* Tabs for "Services" and "About Platform" */}
       <View style={styles.tabContainer}>
         <TouchableOpacity
-          style={[styles.tabButton, activeTab === 'jobes' && styles.activeTab]}
-          onPress={() => setActiveTab('jobes')}
-        > 
-          <FontAwesome5 name="clinic-medical" size={20} color={activeTab === 'jobes' ? '#fff' : colors.primary} />
-          <Text style={[styles.tabText, activeTab === 'jobes' && styles.activeTabText]}>Grupo Nerak</Text> 
+          style={[styles.tabButton, activeTab === 'services' && styles.activeTab]}
+          onPress={() => setActiveTab('services')}
+        >
+          <MaterialCommunityIcons name="briefcase-search-outline" size={20} color={activeTab === 'services' ? '#fff' : colors.primary} />
+          <Text style={[styles.tabText, activeTab === 'services' && styles.activeTabText]}>Encontrar Serviços</Text>
         </TouchableOpacity>
         
         <TouchableOpacity
-          style={[styles.tabButton, activeTab === 'pets' && styles.activeTab]}
-          onPress={() => setActiveTab('pets')}
+          style={[styles.tabButton, activeTab === 'platformInfo' && styles.activeTab]}
+          onPress={() => setActiveTab('platformInfo')}
         >
-          <FontAwesome5 name="tools" size={20} color={activeTab === 'pets' ? '#fff' : colors.primary} />
-          <Text style={[styles.tabText, activeTab === 'pets' && styles.activeTabText]}>Serviços disponíveis</Text>
+          <Ionicons name="information-circle-outline" size={22} color={activeTab === 'platformInfo' ? '#fff' : colors.primary} />
+          <Text style={[styles.tabText, activeTab === 'platformInfo' && styles.activeTabText]}>Sobre a Nerak</Text>
         </TouchableOpacity>
       </View>
 
-      {activeTab === 'jobes' ? (
-        <ScrollView contentContainerStyle={styles.clinicContainer}>
+      {/* Conditional rendering based on active tab */}
+      {activeTab === 'platformInfo' ? (
+        <ScrollView 
+            contentContainerStyle={styles.platformInfoContainer}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[colors.primary]}/>}
+        >
           <Image
-            source={{ uri: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee' }}
-            style={styles.clinicImage}
-            // fazer alterações em nossos serviços
+            source={require('../../assets/freelance-banner.png')} // Replace with a relevant banner
+            style={styles.platformImage} // Restored style
           />
-          <Text style={styles.sectionTitle}>Sobre Nós</Text>
-          <Text style={styles.clinicDescription}>
-            Nossa rede de serviços Nerak, é focada em ser um facilitador entre você e o prestador de serviços. 
-            Aqui o seu problema sempre tem solução!
+          <Text style={styles.sectionTitle}>Conectando Talentos a Oportunidades</Text>
+          <Text style={styles.platformDescription}>
+            A Nerak Freelancer é a sua plataforma completa para encontrar profissionais qualificados para os seus projetos
+            ou para oferecer seus serviços e talentos para uma vasta rede de clientes. Facilitamos a conexão,
+            negociação e realização de trabalhos freelancer.
           </Text>
     
-          <Text style={styles.sectionTitle}>Nossas Disponibilidades</Text>
-          <View style={styles.serviceItem}>
-            <Ionicons name="medkit-outline" size={24} color={colors.primary} />
-            <Text style={styles.serviceText}>Consultas e Exames</Text>
+          <Text style={styles.sectionTitle}>Como Funciona?</Text>
+          <View style={styles.featureItem}>
+            <Ionicons name="search-circle-outline" size={28} color={colors.primary} />
+            <View style={styles.featureTextContainer}>
+              <Text style={styles.featureTitle}>Descubra Talentos</Text>
+              <Text style={styles.featureDescription}>Navegue por categorias, pesquise por habilidades e encontre o profissional ideal.</Text>
+            </View>
           </View>
-          <View style={styles.serviceItem}>
-            <Ionicons name="cut-outline" size={24} color={colors.primary} />
-            <Text style={styles.serviceText}>Banho e Tosa</Text>
+          <View style={styles.featureItem}>
+            <Ionicons name="megaphone-outline" size={28} color={colors.primary} />
+             <View style={styles.featureTextContainer}>
+              <Text style={styles.featureTitle}>Publique Seus Serviços</Text>
+              <Text style={styles.featureDescription}>Crie um perfil atraente, liste suas especialidades e alcance novos clientes.</Text>
+            </View>
           </View>
-          <View style={styles.serviceItem}>
-            <Ionicons name="medal-outline" size={24} color={colors.primary} />
-            <Text style={styles.serviceText}>Vacinação</Text>
+          <View style={styles.featureItem}>
+            <Ionicons name="shield-checkmark-outline" size={28} color={colors.primary} />
+            <View style={styles.featureTextContainer}>
+              <Text style={styles.featureTitle}>Negocie com Segurança</Text>
+              <Text style={styles.featureDescription}>Utilize nossa plataforma para comunicação e acordos transparentes.</Text>
+            </View>
           </View>
           
           <TouchableOpacity 
-            style={styles.scheduleButton}
-            onPress={handleCallButton}
+            style={styles.contactButton}
+            onPress={handleContactPlatform}
           >
-            <FontAwesome5 name="calendar-alt" size={16} color="#fff" />
-            <Text style={styles.scheduleButtonText}>Agendar Serviço</Text>
+            <Ionicons name="mail-outline" size={20} color="#fff" />
+            <Text style={styles.contactButtonText}>Fale Conosco</Text>
           </TouchableOpacity>
         </ScrollView>
       ) : (
-        <View style={styles.petsContainer}>
+        // Services Listing View
+        <View style={styles.servicesListingContainer}>
+           {/* Search Bar */}
+           <View style={styles.searchContainer}>
+            <Ionicons name="search-outline" size={20} color={colors.gray} style={styles.searchIcon} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Buscar serviços, profissionais..."
+              value={searchQuery}
+              onChangeText={handleSearch}
+              placeholderTextColor={colors.gray}
+            />
+            {searchQuery ? (
+              <TouchableOpacity onPress={() => handleSearch("")} style={styles.clearSearchButton}>
+                <Ionicons name="close-circle" size={20} color={colors.gray} />
+              </TouchableOpacity>
+            ) : null}
+          </View>
+
+          {/* Category Filter ScrollView */}
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
             style={styles.categoryScroll}
             contentContainerStyle={styles.categoryContainer}
           >
-            {categories.map((cat) => (
+            {serviceCategories.map((cat) => (
               <TouchableOpacity
                 key={cat.label}
                 style={[
                   styles.categoryButton,
-                  activeCategory === cat.label && styles.activeCategory,
+                  activeCategory === cat.label && styles.activeCategoryButton,
                 ]}
-                onPress={() => filterByCategory(cat.label)}
+                onPress={() => handleCategoryFilter(cat.label)}
               >
-                <FontAwesome5
-                  name={cat.icon}
-                  size={16}
-                  color={activeCategory === cat.label ? "#fff" : colors.gray}
+                <Ionicons 
+                  name={cat.icon} 
+                  size={18}
+                  color={activeCategory === cat.label ? "#fff" : colors.primary}
                 />
                 <Text
                   style={[
@@ -226,26 +313,39 @@ if (loading) {
             ))}
           </ScrollView>
 
-          {filteredPets.length > 0 ? (
+          {/* Services List or Empty State */}
+          {filteredServices.length > 0 ? (
             <FlatList
-              data={filteredPets}
+              data={filteredServices}
               numColumns={2}
               columnWrapperStyle={styles.columnWrapper}
-              renderItem={renderPet}
+              renderItem={renderServiceCard}
               keyExtractor={(item) => item.id.toString()}
-              contentContainerStyle={styles.list}
+              contentContainerStyle={styles.listContent}
               showsVerticalScrollIndicator={false}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[colors.primary]}/>
+              }
             />
           ) : (
-            <View style={styles.emptyContainer}>
-              <Ionicons name="paw-outline" size={48} color={colors.gray} />
-              <Text style={styles.emptyText}>Nenhum serviço encontrado</Text>
+            <View style={styles.emptyListContainer}>
+              <MaterialCommunityIcons name="briefcase-off-outline" size={60} color={colors.gray} />
+              <Text style={styles.emptyListText}>Nenhum serviço encontrado para esta categoria ou busca.</Text>
+              {activeCategory !== "Todos" || searchQuery !== "" ? (
+                <TouchableOpacity onPress={() => {
+                  setActiveCategory("Todos");
+                  setSearchQuery("");
+                  filterServices(services, "Todos", ""); // Reset filters
+                }}>
+                  <Text style={styles.clearFilterText}>Limpar filtros</Text>
+                </TouchableOpacity>
+              ) : null}
             </View>
           )}
         </View>
       )}
 
-      {/* Botão Flutuante */}
+      {/* Floating Action Button for Favorites */}
       <TouchableOpacity
         style={[styles.floatingButton, styles.favoritesButton]}
         onPress={() => navigation.navigate("Favoritos")}
@@ -256,241 +356,301 @@ if (loading) {
   );
 }
 
+// Styles for the Home component
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f9f9f9",
+    backgroundColor: "#f0f2f5", 
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 20,
-    backgroundColor: colors.primary,
-    paddingTop: 50,
-  },
-  headerTextContainer: {
-    marginLeft: 15,
-  },
-  welcomeText: {
-    fontSize: 16,
-    color: "#fff",
-    opacity: 0.8,
-  },
-  clinicName: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#fff",
-    marginTop: 5,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    backgroundColor: colors.primary, 
+    paddingTop: (Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0) + 10, // Adjust for status bar
   },
   profileImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 45,
+    height: 45,
+    borderRadius: 22.5,
     borderWidth: 2,
     borderColor: "#fff",
+  },
+  headerTextContainer: {
+    marginLeft: 10,
+    flex: 1,
+  },
+  welcomeText: {
+    fontSize: 14,
+    color: "#e0e0e0", 
+  },
+  platformName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#fff",
+  },
+  menuButton: {
+    padding: 5,
   },
   tabContainer: {
     flexDirection: "row",
     backgroundColor: "#fff",
     borderBottomWidth: 1,
-    borderBottomColor: "#eee",
+    borderBottomColor: "#ddd",
   },
   tabButton: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 15,
+    paddingVertical: 14,
     backgroundColor: '#fff',
   },
   activeTab: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.primary, 
+    borderBottomWidth: 3,
+    borderBottomColor: colors.accent || colors.primaryDark, 
   },
   tabText: {
     marginLeft: 8,
-    fontSize: 14,
+    fontSize: 13, 
     fontWeight: '600',
     color: colors.primary,
   },
   activeTabText: {
     color: '#fff',
   },
-  clinicContainer: {
+  platformInfoContainer: {
     padding: 20,
-    paddingBottom: 40,
+    paddingBottom: 80, 
   },
-  clinicImage: {
+  platformImage: {
     width: '100%',
-    height: 200,
+    height: 180, 
     borderRadius: 10,
     marginBottom: 20,
+    resizeMode: 'cover',
   },
-  sectionTitle: {
-    fontSize: 20,
+  sectionTitle: { // Used in Platform Info
+    fontSize: 20, 
     fontWeight: 'bold',
     color: colors.dark,
-    marginTop: 20,
-    marginBottom: 10,
+    marginTop: 25,
+    marginBottom: 15,
   },
-  clinicDescription: {
-    fontSize: 16,
-    color: '#666',
-    lineHeight: 24,
+  platformDescription: {
+    fontSize: 15,
+    color: '#555', 
+    lineHeight: 23,
     marginBottom: 10,
+    textAlign: 'justify',
   },
-  serviceItem: {
+  featureItem: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start', 
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: '#e9e9e9',
   },
-  serviceText: {
-    fontSize: 16,
+  featureTextContainer: {
     marginLeft: 15,
-    color: '#444',
+    flex: 1, 
   },
-  petsContainer: {
-    flex: 1,
-    paddingHorizontal: 15,
+  featureTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.dark,
+    marginBottom: 3,
   },
-  scheduleButton: {
+  featureDescription: {
+    fontSize: 14,
+    color: '#666',
+  },
+  contactButton: { // For "Fale Conosco"
     backgroundColor: colors.primary,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 15,
-    borderRadius: 10,
+    paddingVertical: 14,
+    borderRadius: 8,
     marginTop: 30,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
   },
-  scheduleButtonText: {
+  contactButtonText: {
     color: "#fff",
     fontWeight: "bold",
     marginLeft: 10,
     fontSize: 16,
   },
+  servicesListingContainer: {
+    flex: 1,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 25,
+    marginHorizontal: 15,
+    marginTop: 15,
+    marginBottom: 10,
+    paddingHorizontal: 15,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  searchIcon: {
+    marginRight: 10,
+  },
+  searchInput: {
+    flex: 1,
+    height: 45,
+    fontSize: 15,
+    color: colors.dark,
+  },
+  clearSearchButton: {
+    padding: 5,
+  },
   categoryScroll: {
-    marginVertical: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
   },
   categoryContainer: {
-    paddingBottom: 5,
+    paddingBottom: 5, 
   },
   categoryButton: {
     backgroundColor: "#fff",
-    paddingVertical: 8,
-    paddingHorizontal: 15,
+    paddingVertical: 10,
+    paddingHorizontal: 18,
     borderRadius: 20,
     marginRight: 10,
     flexDirection: "row",
     alignItems: "center",
+    borderWidth: 1,
+    borderColor: colors.primary, 
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
   },
-  activeCategory: {
+  activeCategoryButton: {
     backgroundColor: colors.primary,
   },
   categoryText: {
-    fontSize: 14,
-    color: colors.gray,
-    marginLeft: 5,
+    fontSize: 13,
+    color: colors.primary,
+    marginLeft: 8,
+    fontWeight: '500',
   },
   activeCategoryText: {
     color: "#fff",
   },
-  list: {
-    paddingBottom: 20,
+  listContent: {
+    paddingHorizontal: 15,
+    paddingBottom: 80, 
   },
   columnWrapper: {
     justifyContent: "space-between",
-    marginBottom: 15,
   },
-  petCard: {
+  serviceCard: {
     backgroundColor: "#fff",
-    borderRadius: 12,
-    width: width * 0.45,
-    overflow: "hidden",
+    borderRadius: 10,
+    width: width * 0.48 - 22.5, 
+    marginBottom: 15,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.08,
     shadowRadius: 4,
-    elevation: 2,
-    marginBottom: 15,
+    elevation: 3,
+    overflow: 'hidden',
   },
-  image: {
+  serviceImage: {
     width: "100%",
-    height: 120,
-    resizeMode: "cover",
+    height: 110, 
   },
   heartIcon: {
     position: "absolute",
-    top: 10,
-    right: 10,
-    backgroundColor: "rgba(0,0,0,0.2)",
-    borderRadius: 20,
-    padding: 6,
+    top: 8,
+    right: 8,
+    borderRadius: 15,
+    padding: 5,
   },
-  petInfo: {
-    padding: 12,
+  serviceInfo: {
+    padding: 10, 
   },
-  petName: {
-    fontSize: 16,
-    fontWeight: "700",
+  serviceName: {
+    fontSize: 15, 
+    fontWeight: "bold", 
     color: colors.dark,
-    marginBottom: 4,
+    marginBottom: 3,
   },
-  petBreed: {
-    fontSize: 14,
-    color: colors.primary,
-    marginBottom: 8,
+  serviceCategoryName: {
+    fontSize: 12,
+    color: colors.primary, 
+    marginBottom: 5,
   },
-  petDetails: {
+  serviceLocationDetails: {
     flexDirection: "row",
     alignItems: "center",
   },
-  details: {
-    fontSize: 12,
+  detailsText: {
+    fontSize: 11, 
     color: colors.gray,
-    marginLeft: 5,
+    marginLeft: 4,
   },
   floatingButton: {
     position: "absolute",
-    bottom: 30,
+    bottom: 25,
     right: 20,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 56, 
+    height: 56,
+    borderRadius: 28,
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 5,
+    elevation: 5,
   },
   favoritesButton: {
-    backgroundColor: "#ff4444",
+    backgroundColor: colors.danger, 
   },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#f0f2f5",
   },
   loadingText: {
-    marginTop: 10,
+    marginTop: 12,
+    fontSize: 16,
     color: colors.gray,
   },
-  emptyContainer: {
+  emptyListContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingBottom: 100,
+    padding: 30,
+    minHeight: 200, 
   },
-  emptyText: {
+  emptyListText: {
     fontSize: 16,
     color: colors.gray,
-    marginTop: 16,
+    textAlign: 'center',
+    marginTop: 15,
   },
+  clearFilterText: {
+    color: colors.primary,
+    marginTop: 15,
+    fontWeight: 'bold',
+    fontSize: 15,
+  }
 });

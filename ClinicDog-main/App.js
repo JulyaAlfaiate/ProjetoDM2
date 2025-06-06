@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { View, ActivityIndicator } from "react-native";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "./src/services/firebase.js";
+import { auth } from "./src/servicess/firebase.js";
 import Login from "./src/screens/Login";
 import Signup from "./src/screens/Signup";
 import AppStack from "./src/navigation/AppStack";

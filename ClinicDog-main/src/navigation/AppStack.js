@@ -1,7 +1,7 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import DrawerNavigator from "./DrawerNavigator";
-import PetDetails from "../screens/PetDetails";
+import PetDetails from "../screens/ServiceDetails";
 import EditProfile from "../screens/EditProfile";
 
 const Stack = createStackNavigator();

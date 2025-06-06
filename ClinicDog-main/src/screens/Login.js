@@ -12,16 +12,16 @@ import {
   ActivityIndicator 
 } from "react-native";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../services/firebase";
-import { AuthenticatedUserContext } from "../../App"; // Verifique o caminho se App.js está na raiz
+import { auth } from "../servicess/firebase";
+import { AuthenticatedUserContext } from "../../App";
 
-const backImage = require("../../assets/login.png"); // Mantenha ou altere a imagem
+const backImage = require("../../assets/login.png");
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { setUser } = useContext(AuthenticatedUserContext); 
+  const { setUser } = useContext(AuthenticatedUserContext);
 
   const onHandleLogin = async () => {
     if (!email || !password) {
@@ -32,22 +32,21 @@ export default function Login({ navigation }) {
     setIsLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      setUser(userCredential.user); 
-      console.log("Login success");
-      // navigation.replace("Home"); // Descomente se quiser navegar direto para Home
+      setUser(userCredential.user);
+      navigation.replace("HomeDrawer");
     } catch (err) {
       Alert.alert("Erro no login", err.message);
     } finally {
       setIsLoading(false);
     }
   };
-  
+
   return (
     <View style={styles.container}>
       <Image source={backImage} style={styles.backImage} />
       <View style={styles.whiteSheet} />
       <SafeAreaView style={styles.form}>
-        <Text style={styles.title}>neraK</Text>
+        <Text style={styles.title}>neraK - Faça seu Login</Text>
         <TextInput
           style={styles.input}
           placeholder="Digite seu email"
@@ -57,7 +56,6 @@ export default function Login({ navigation }) {
           autoFocus={true}
           value={email}
           onChangeText={(text) => setEmail(text)}
-          placeholderTextColor="#555555"
         />
         <TextInput
           style={styles.input}
@@ -68,7 +66,6 @@ export default function Login({ navigation }) {
           textContentType="password"
           value={password}
           onChangeText={(text) => setPassword(text)}
-          placeholderTextColor="#555555"
         />
         <TouchableOpacity 
           style={styles.button} 
@@ -76,15 +73,15 @@ export default function Login({ navigation }) {
           disabled={isLoading}
         >
           {isLoading ? (
-            <ActivityIndicator color="#ffffff" /> // Cor Branca para indicador no botão
+            <ActivityIndicator color="#fff" />
           ) : (
-            <Text style={{fontWeight: 'bold', color: '#ffffff', fontSize: 18}}>Continuar</Text>
+            <Text style={{fontWeight: 'bold', color: '#fff', fontSize: 18}}>Entrar</Text>
           )}
         </TouchableOpacity>
         <View style={{marginTop: 20, flexDirection: 'row', alignItems: 'center', alignSelf: 'center'}}>
-          <Text style={{color: '#000000', fontWeight: '600', fontSize: 14}}>Não tem conta? </Text>
+          <Text style={{color: 'gray', fontWeight: '600', fontSize: 14}}>Não possui uma conta? </Text>
           <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
-            <Text style={{color: '#4169e1', fontWeight: '600', fontSize: 14}}> Faça seu cadastro</Text>
+            <Text style={{color: '#5250F2', fontWeight: '600', fontSize: 14}}> Cadastre-se</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -96,29 +93,28 @@ export default function Login({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff", // Cor Branca
+    backgroundColor: "#fff",
   },
   title: {
-    fontSize: 36,
+    fontSize: 30,
     fontWeight: 'bold',
-    color: "#000000", 
+    color: "black",
     alignSelf: "center",
     paddingBottom: 24,
   },
   input: {
-    backgroundColor: "#e5e4fb", 
+    backgroundColor: "#F6F7FB",
     height: 58,
     marginBottom: 20,
     fontSize: 16,
     borderRadius: 10,
     padding: 12,
-    color: "#000000", 
   },
   backImage: {
     width: "100%",
     height: 340,
     position: "absolute",
-    top: 0,
+    top: 5,
     resizeMode: 'cover',
   },
   whiteSheet: {
@@ -126,7 +122,7 @@ const styles = StyleSheet.create({
     height: '75%',
     position: "absolute",
     bottom: 0,
-    backgroundColor: '#ffffff', // Cor Branca
+    backgroundColor: '#fff',
     borderTopLeftRadius: 60,
   },
   form: {

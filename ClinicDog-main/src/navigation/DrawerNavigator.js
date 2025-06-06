@@ -3,7 +3,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { View, TouchableOpacity, Text, Alert } from "react-native";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { signOut } from "firebase/auth";
-import { auth } from "../services/firebase";
+import { auth } from "../servicess/firebase";
 import { AuthenticatedUserContext } from "../../App";
 import Home from "../screens/Home";
 import Profile from "../screens/Profile";

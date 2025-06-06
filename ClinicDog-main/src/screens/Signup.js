@@ -4,8 +4,8 @@ import {
   TouchableOpacity, StatusBar, Alert, ActivityIndicator
 } from "react-native";
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../services/firebase';
-import { createUserProfile } from "../services/freelancerApi";
+import { auth } from '../servicess/firebase';
+import { createUserProfile } from "../servicess/freelancerApi";
 
 const backImage = require("../../assets/login.png");
 

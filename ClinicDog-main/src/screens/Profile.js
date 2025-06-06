@@ -10,8 +10,8 @@ import {
   ActivityIndicator,
   Animated
 } from "react-native";
-import { auth } from "../services/firebase";
-import { getUserProfile, getPetsByUser, deletePet } from "../services/freelancerApi";
+import { auth } from "../servicess/firebase";
+import { getUserProfile, getPetsByUser, deletePet } from "../servicess/freelancerApi";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
@@ -77,7 +77,7 @@ export default function Profile() {
       <View style={styles.row}>
         <Text style={styles.name}>{item.name}</Text>
         <TouchableOpacity onPress={() => handleDelete(item.id)}>
-          <Ionicons name="trash-outline" size={22} color="#f87171" />
+          <Ionicons name="trash-outline" size={22} color="5250F2" />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => navigation.navigate("EditarPet", { pet: item })}
@@ -93,7 +93,7 @@ export default function Profile() {
   if (isLoading) {
     return (
       <View style={[styles.container, styles.loadingContainer]}>
-        <ActivityIndicator size="large" color="#f97316" />
+        <ActivityIndicator size="large" color="#5250F2" />
         <Text style={styles.loadingText}>Carregando seu perfil...</Text>
       </View>
     );
@@ -116,12 +116,12 @@ export default function Profile() {
         <Text style={styles.buttonText}>Editar Perfil</Text>
       </TouchableOpacity>
       
-      <Text style={styles.title}>Meus Pets</Text>
+     <Text style={styles.title}>Meus</Text>
       <FlatList
         data={pets}
         keyExtractor={(item) => item.id}
         renderItem={renderPet}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={styles.listContent} 
       />
     </Animated.View>
   );
@@ -139,15 +139,15 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 20,
     fontSize: 18,
-    color: "#f97316",
+    color: "#5250F2",
   },
   avatar: {
     width: 120,
     height: 120,
-    borderRadius: 60,
+    borderRadius: 80,
     marginBottom: 20,
     borderWidth: 2,
-    borderColor: "#f97316",
+    borderColor: "#5250F2",
     alignSelf: "center",
   },
   name: { 
@@ -168,9 +168,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   button: {
-    backgroundColor: "#f97316",
+    backgroundColor: "#5250F2",
     paddingVertical: 12,
-    paddingHorizontal: 24,
+    paddingHorizontal: 40,
     borderRadius: 10,
     alignSelf: "center",
     marginBottom: 20,
