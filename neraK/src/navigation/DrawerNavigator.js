@@ -8,6 +8,7 @@ import { AuthenticatedUserContext } from "../../App";
 import Home from "../screens/Home";
 import Profile from "../screens/Profile";
 import Favorites from "../screens/Favorites";
+import ServiceDetails from "../screens/ServiceDetails";
 
 const Drawer = createDrawerNavigator();
 

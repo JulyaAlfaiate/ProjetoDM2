@@ -13,7 +13,7 @@ import {
   Dimensions,
   RefreshControl,
   TextInput,
-  Platform, // Added for Platform specific checks like StatusBar
+  Platform, // TA FUNCIONANDO NAO MEXERRRRRRRRRR
   StatusBar // Added for StatusBar height
 } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
@@ -21,6 +21,7 @@ import { AntDesign, Entypo, Ionicons, MaterialCommunityIcons } from "@expo/vecto
 import { getServices, toggleFavoriteService } from '../servicess/freelancerApi'; // API functions should be updated
 import { auth } from '../servicess/firebase'; // CRITICAL: Added Firebase auth import
 import colors from "../../colors"; // Assuming colors.js exists
+
 
 const { width } = Dimensions.get('window');
 

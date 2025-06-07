@@ -8,12 +8,12 @@ import {
   SafeAreaView, 
   TouchableOpacity, 
   StatusBar, 
-  Alert,
+  Alert, 
   ActivityIndicator 
 } from "react-native";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../servicess/firebase";
-import { AuthenticatedUserContext } from "../../App";
+import { AuthenticatedUserContext } from "../../App"; // Importa o contexto de autenticação
 
 const backImage = require("../../assets/login.png");
 
@@ -21,23 +21,44 @@ export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { setUser } = useContext(AuthenticatedUserContext);
+  const { setUser } = useContext(AuthenticatedUserContext); // Acessa a função setUser do contexto
 
   const onHandleLogin = async () => {
+    // Verifica se os campos de e-mail e senha estão preenchidos
     if (!email || !password) {
-      Alert.alert("Erro", "Por favor, preencha todos os campos");
+      Alert.alert("Erro de Login", "Por favor, preencha todos os campos para fazer login.");
       return;
     }
 
-    setIsLoading(true);
+    setIsLoading(true); // Ativa o indicador de carregamento
     try {
+      // Tenta fazer login com e-mail e senha usando o Firebase
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      setUser(userCredential.user);
-      navigation.replace("HomeDrawer");
+      setUser(userCredential.user); // Define o usuário autenticado no contexto
+      console.log("Login bem-sucedido! Usuário:", userCredential.user.email); // Log para depuração
+      
+      // Navega para o Drawer Navigator principal após login bem-sucedido.
+      // É CRÍTICO que "HomeDrawer" seja o nome da rota do seu Drawer Navigator principal
+      // no arquivo App.js (ou o arquivo onde você gerencia a navegação raiz).
+      navigation.replace("HomeDrawer"); 
     } catch (err) {
-      Alert.alert("Erro no login", err.message);
+      console.error("Erro no login:", err.message); // Loga o erro completo para depuração
+      let errorMessage = "Ocorreu um erro ao tentar fazer login. Por favor, tente novamente.";
+
+      if (err.code === 'auth/invalid-email') {
+        errorMessage = "O endereço de e-mail está mal formatado ou é inválido.";
+      } else if (err.code === 'auth/user-disabled') {
+        errorMessage = "Esta conta de usuário foi desativada.";
+      } else if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
+        errorMessage = "Credenciais inválidas. Verifique seu e-mail e senha.";
+      } else if (err.code === 'auth/too-many-requests') {
+        errorMessage = "Muitas tentativas de login. Sua conta pode ter sido temporariamente bloqueada por segurança. Tente novamente mais tarde.";
+      } else if (err.code) { 
+        errorMessage = `Erro Firebase: ${err.message}`;
+      }
+      Alert.alert("Erro de Login", errorMessage); 
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); 
     }
   };
 
@@ -70,10 +91,10 @@ export default function Login({ navigation }) {
         <TouchableOpacity 
           style={styles.button} 
           onPress={onHandleLogin}
-          disabled={isLoading}
+          disabled={isLoading} 
         >
           {isLoading ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color="#fff" /> 
           ) : (
             <Text style={{fontWeight: 'bold', color: '#fff', fontSize: 18}}>Entrar</Text>
           )}

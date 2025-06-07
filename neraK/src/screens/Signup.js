@@ -22,6 +22,7 @@ export default function Signup({ navigation }) {
 
       await createUserProfile(user);
 
+      Alert.alert("Sucesso", "Conta criada com sucesso! Bem-vindo(a)!");
       navigation.replace("Home"); 
     } catch (error) {
       console.error("Erro ao cadastrar:", error.message);
