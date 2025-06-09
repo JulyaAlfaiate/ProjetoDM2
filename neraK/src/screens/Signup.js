@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   StyleSheet, Text, View, TextInput, Image, SafeAreaView,
-  TouchableOpacity, StatusBar, Alert, ActivityIndicator
+  TouchableOpacity, Alert, ActivityIndicator
 } from "react-native";
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../servicess/firebase';
@@ -12,10 +12,10 @@ const backImage = require("../../assets/login.png");
 export default function Signup({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
 
   const handleSignup = async () => {
-    setLoading(true); 
+    setLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
@@ -23,12 +23,12 @@ export default function Signup({ navigation }) {
       await createUserProfile(user);
 
       Alert.alert("Sucesso", "Conta criada com sucesso! Bem-vindo(a)!");
-      navigation.replace("Home"); 
+      navigation.replace("Home");
     } catch (error) {
       console.error("Erro ao cadastrar:", error.message);
       Alert.alert("Erro", error.message);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -75,7 +75,6 @@ export default function Signup({ navigation }) {
           </TouchableOpacity>
         </View>
       </SafeAreaView>
-      <StatusBar barStyle="light-content" />
     </View>
   );
 }

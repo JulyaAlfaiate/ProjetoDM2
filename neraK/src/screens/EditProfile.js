@@ -107,7 +107,7 @@ export default function EditProfile({ navigation }) {
     }
   };
 
-  if (loading && !uploading) { 
+  if (loading && !uploading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#4169e1" />
@@ -184,7 +184,7 @@ export default function EditProfile({ navigation }) {
           style={styles.input}
           placeholderTextColor="#777"
         />
-      
+
         <TouchableOpacity onPress={handleSave} style={styles.button} disabled={loading || uploading}>
           {loading || uploading ? (
             <ActivityIndicator color="#fff" />
@@ -200,7 +200,7 @@ export default function EditProfile({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8f9fa", 
+    backgroundColor: "#f8f9fa",
   },
   loadingContainer: {
     flex: 1,
@@ -209,12 +209,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#f8f9fa",
   },
   header: {
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 10 : 50, // Adjust for status bar
+    paddingTop: 50,
     paddingBottom: 16,
     paddingHorizontal: 16,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#ffffff", 
+    backgroundColor: "#ffffff",
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#333", 
+    color: "#333",
   },
   content: {
     padding: 20,
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     height: 130,
     borderRadius: 65,
     borderWidth: 3,
-    borderColor: "#4169e1", 
+    borderColor: "#4169e1",
   },
   cameraIconContainer: {
     position: 'absolute',
@@ -274,21 +274,21 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ddd", 
-    backgroundColor: "#fff", 
+    borderColor: "#ddd",
+    backgroundColor: "#fff",
     borderRadius: 8,
     paddingVertical: 12,
     paddingHorizontal: 15,
     fontSize: 16,
     marginBottom: 20,
-    color: "#333", 
+    color: "#333",
   },
   textArea: {
     height: 100,
     textAlignVertical: 'top', // For Android
   },
   button: {
-    backgroundColor: "#4169e1", 
+    backgroundColor: "#4169e1",
     paddingVertical: 15,
     borderRadius: 8,
     alignItems: "center",
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   buttonText: {
-    color: "#ffffff", 
+    color: "#ffffff",
     fontWeight: "bold",
     fontSize: 16,
   },

@@ -1,15 +1,15 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert, Linking, StatusBar, Platform } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert, Linking, Platform } from 'react-native';
 import { Ionicons, MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
-import colors from '../../colors'; // Supondo que seu arquivo de cores esteja neste caminho
+import colors from '../../colors'; 
 
-// Recebemos a 'navigation' para navegar e 'route' para acessar os dados passados.
+
 export default function ServiceDetails({ route, navigation }) {
-  // Pegamos o objeto 'service' que foi enviado da tela Home.
+
   const { service } = route.params;
 
   if (!service) {
-    // Fallback caso algo dê errado e os dados não cheguem.
+    
     return (
       <View style={styles.loadingContainer}>
         <Text>Erro: Serviço não encontrado.</Text>
@@ -17,26 +17,25 @@ export default function ServiceDetails({ route, navigation }) {
     );
   }
 
-  // Função para o botão de chat
+
   const handleChatPress = () => {
-    // Navega para a tela 'Chat', passando o ID e o nome do prestador.
-    // Você precisará criar a tela 'Chat' futuramente.
-    navigation.navigate('Chat', { 
-      receiverId: service.providerId, 
-      receiverName: service.freelancerName 
+  
+    navigation.navigate('Chat', {
+      receiverId: service.providerId,
+      receiverName: service.freelancerName
     });
   };
+
   
-  // Função para o botão de perfil (ainda sem funcionalidade)
   const handleProfilePress = () => {
     Alert.alert(
       "Em Breve",
       "A funcionalidade para visualizar o perfil do prestador será implementada em breve."
     );
-   
+
   };
 
-  // Função para voltar para a tela anterior
+ 
   const handleGoBack = () => {
     navigation.goBack();
   };
@@ -44,7 +43,7 @@ export default function ServiceDetails({ route, navigation }) {
 
   return (
     <View style={styles.fullScreenContainer}>
-      {/* Botão de voltar fixo no canto superior esquerdo */}
+      {/* Botão de voltar no canto superior esquerdo */}
       <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
         <Ionicons name="arrow-back" size={28} color="#fff" />
       </TouchableOpacity>
@@ -56,7 +55,7 @@ export default function ServiceDetails({ route, navigation }) {
           style={styles.image}
           resizeMode="cover"
         />
-        
+
         <View style={styles.content}>
           {/* NOME E CATEGORIA DO SERVIÇO */}
           <Text style={styles.serviceName}>{service.serviceName || "Serviço sem Nome"}</Text>
@@ -69,14 +68,14 @@ export default function ServiceDetails({ route, navigation }) {
             <Text style={styles.sectionTitle}>Sobre o Serviço</Text>
             <Text style={styles.descriptionText}>{service.description || "Nenhuma descrição disponível."}</Text>
           </View>
-          
+
           {/* INFORMAÇÕES DO PRESTADOR */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Oferecido por</Text>
             <View style={styles.providerBox}>
               <View>
                 <Text style={styles.providerName}>{service.freelancerName || "Profissional Desconhecido"}</Text>
-                {/* No futuro, você pode adicionar a avaliação do prestador aqui */}
+                {/* No futuro, adicionar a avaliação do prestador aqui */}
                 <Text style={styles.providerRating}>Avaliação: {service.rating ? `${service.rating} ★` : 'Não avaliado'}</Text>
               </View>
               {/* 3. BOTÃO PARA PERFIL DO PRESTADOR (sem funcionalidade por enquanto) */}
@@ -106,9 +105,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  container: { 
-    flex: 1, 
-    backgroundColor: '#fff' 
+  container: {
+    flex: 1,
+    backgroundColor: '#fff'
   },
   loadingContainer: {
     flex: 1,
@@ -117,20 +116,20 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 300, // Imagem maior e mais destacada
+    height: 300, 
   },
   backButton: {
     position: 'absolute',
-    top: Platform.OS === 'android' ? StatusBar.currentHeight + 10 : 50, // Ajusta para a barra de status
+    top: 50, 
     left: 20,
-    zIndex: 10, // Garante que o botão esteja acima da imagem
-    backgroundColor: 'rgba(0,0,0,0.4)', // Fundo semi-transparente para visibilidade
+    zIndex: 10, 
+    backgroundColor: 'rgba(0,0,0,0.4)', 
     borderRadius: 20,
     padding: 8,
   },
   content: {
     padding: 20,
-    paddingBottom: 100, // Espaço para o botão de chat fixo no rodapé
+    paddingBottom: 100, 
   },
   serviceName: {
     fontSize: 26,

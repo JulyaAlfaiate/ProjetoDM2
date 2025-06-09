@@ -2,8 +2,8 @@
 
 export default {
   expo: {
-    name: "ClinicDog",
-    slug: "ClinicDog",
+    name: "neraK",
+    slug: "neraK",
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/icon.png",
