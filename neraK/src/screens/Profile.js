@@ -11,40 +11,37 @@ import {
   Animated
 } from "react-native";
 import { auth } from "../servicess/firebase";
-import { getUserProfile, getPetsByUser, deletePet } from "../servicess/freelancerApi";
+import { getUserProfile, getServicesByUser, deleteService } from "../servicess/freelancerApi";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
 export default function Profile() {
   const [profile, setProfile] = useState(null);
-  const [pets, setPets] = useState([]);
+  const [services, setServices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [fadeAnim] = useState(new Animated.Value(0));
   const navigation = useNavigation();
 
   useEffect(() => {
-    // Animação de fade-in
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 1000,
       useNativeDriver: true,
     }).start();
 
-    // Simula carregamento por 5 segundos
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 5000);
 
-    // Carrega os dados do perfil
     const fetchData = async () => {
       const user = auth.currentUser;
       if (user) {
-        const [profileData, userPets] = await Promise.all([
+        const [profileData, userServices] = await Promise.all([
           getUserProfile(user.uid),
-          getPetsByUser(user.uid)
+          getServicesByUser(user.uid)
         ]);
         setProfile(profileData);
-        setPets(userPets);
+        setServices(userServices);
       }
     };
 
@@ -55,38 +52,38 @@ export default function Profile() {
 
   const handleDelete = (id) => {
     Alert.alert(
-      "Excluir pet",
-      "Tem certeza que deseja excluir esta publicação?",
+      "Excluir Serviço",
+      "Tem certeza que deseja excluir esta publicação de serviço?",
       [
         { text: "Cancelar", style: "cancel" },
         {
           text: "Excluir",
           style: "destructive",
           onPress: async () => {
-            await deletePet(id);
-            setPets(pets.filter((pet) => pet.id !== id));
+            await deleteService(id);
+            setServices(services.filter((service) => service.id !== id));
           },
         },
       ]
     );
   };
 
-  const renderPet = ({ item }) => (
+  const renderService = ({ item }) => (
     <Animated.View style={[styles.card, { opacity: fadeAnim }]}>
       <Image source={{ uri: item.image }} style={styles.image} />
       <View style={styles.row}>
-        <Text style={styles.name}>{item.name}</Text>
+        <Text style={styles.name}>{item.title}</Text>
         <TouchableOpacity onPress={() => handleDelete(item.id)}>
           <Ionicons name="trash-outline" size={22} color="5250F2" />
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => navigation.navigate("EditarPet", { pet: item })}
+          onPress={() => navigation.navigate("EditService", { service: item })}
         >
           <Ionicons name="create-outline" size={22} color="#3b82f6" />
         </TouchableOpacity>
       </View>
-      <Text style={styles.info}>Idade: {item.age}</Text>
-      <Text style={styles.info}>Local: {item.location}</Text>
+      <Text style={styles.info}>Categoria: {item.category}</Text>
+      <Text style={styles.info}>Preço: {item.price}</Text>
     </Animated.View>
   );
 
@@ -116,13 +113,7 @@ export default function Profile() {
         <Text style={styles.buttonText}>Editar Perfil</Text>
       </TouchableOpacity>
       
-     <Text style={styles.title}>Meus</Text>
-      <FlatList
-        data={pets}
-        keyExtractor={(item) => item.id}
-        renderItem={renderPet}
-        contentContainerStyle={styles.listContent} 
-      />
+     
     </Animated.View>
   );
 }

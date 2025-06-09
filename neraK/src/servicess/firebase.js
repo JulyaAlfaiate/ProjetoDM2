@@ -13,8 +13,8 @@ const firebaseConfig = {
   projectId: "projetox-e464d",
   storageBucket: "projetox-e464d.firebasestorage.app",
   messagingSenderId: "902056836253",
-  appId: "1:902056836253:web:291ff57bb32ce949566874",
-  measurementId: "G-QB3J8K8F3S"
+  appId: "1:902056836253:web:1a3d81c9e9d46cf9566874",
+  measurementId: "G-V2N3FV009K"
 };
 
 // Inicializa o app Firebase
