@@ -99,17 +99,12 @@ npx expo start
 
 ### 🧠 Observações Importantes
 
-* **Este projeto foi desenvolvido com foco em um trabalho acadêmico, MVP (Minimum Viable Product) ou para uso pessoal.**
-* **Dados de usuários e projetos podem ser fictícios ou mockados para fins de desenvolvimento inicial.**
-* **O aplicativo pode ser expandido para incluir funcionalidades como gateways de pagamento, sistema de notificações push, chat em tempo real mais robusto, etc.**
-
-**Desenvolvido por Julya Alfaiate.**
-================================
-
 🧠 Observações Importantes
 Este projeto foi desenvolvido com foco em um trabalho acadêmico, MVP (Minimum Viable Product) ou para uso pessoal.
 Dados de usuários e projetos podem ser fictícios ou mockados para fins de desenvolvimento inicial.
 O aplicativo pode ser expandido para incluir funcionalidades como gateways de pagamento, sistema de notificações push, chat em tempo real mais robusto, etc.
 
+**Desenvolvido por Julya Alfaiate, 
+Junho de 2025**
+================================
 
-Desenvolvido por Julya Alfaiate.
