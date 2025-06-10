@@ -5,13 +5,10 @@ O **NeraK** é um aplicativo móvel desenvolvido em  **React Native com Expo** *
 ## 🚀 Funcionalidades
 
 * **Perfis de Usuário** — Permite que freelancers criem perfis detalhados com portfólio e habilidades, e clientes gerenciem suas necessidades e projetos.
-* **Publicação de Projetos** — Clientes podem publicar projetos com descrições detalhadas, requisitos e orçamentos.
 * **Busca e Filtragem de Freelancers/Projetos** — Ferramentas intuitivas para freelancers encontrarem projetos adequados e clientes localizarem profissionais ideais.
-* **Envio e Gestão de Propostas** — Freelancers podem enviar propostas para projetos, e clientes podem revisar e aceitar a melhor oferta.
-* **Comunicação Integrada** — Possibilita a comunicação direta entre clientes e freelancers dentro do aplicativo.
-* **Sistema de Avaliações** — Permite que clientes avaliem o trabalho de freelancers, e vice-versa, construindo uma reputação na plataforma.
 * **Integração com Firebase** — Backend robusto utilizando Firestore para dados, Authentication para gerenciamento de usuários.
 * **Animações Lottie** — Animações para melhorar a experiência do usuário, como telas de carregamento.
+* **Seleção de favoritos- O usuário pode favoritar serviços de seus interesses.
 
 ## 🛠️ Tecnologias Utilizadas
 
@@ -83,7 +80,7 @@ npx expo start
 npx expo start
 
 🗂️ Estrutura de Pastas
->>>>>>> 80c784ad2e397fd27f5c84161dd6f8f0b5f31b1a
+
 ├── assets/                # Imagens, animações e ícones
 ├── src/
 │   ├── components/        # Componentes reutilizáveis da UI
