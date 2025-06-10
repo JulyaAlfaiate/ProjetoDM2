@@ -8,13 +8,13 @@ import { getAnalytics } from 'firebase/analytics';
 
 // ✅ Config oficial do Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyDKCsGdnjQcf1qw73vQQv-rm57JQFYi4DQ",
-  authDomain: "projetox-e464d.firebaseapp.com",
-  projectId: "projetox-e464d",
-  storageBucket: "projetox-e464d.firebasestorage.app",
-  messagingSenderId: "902056836253",
-  appId: "1:902056836253:web:1a3d81c9e9d46cf9566874",
-  measurementId: "G-V2N3FV009K"
+  apiKey: " ",
+  authDomain: " ",
+  projectId: " ",
+  storageBucket: " ",
+  messagingSenderId: " ",
+  appId: " ",
+  measurementId: " "
 };
 
 // Inicializa o app Firebase
