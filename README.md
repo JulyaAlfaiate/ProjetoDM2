@@ -1,8 +1,8 @@
-<<<<<<< HEAD
+
 
 # 💻 NeraK - Plataforma de Conexão Freelancer
 
-**O ****NeraK** é um aplicativo móvel desenvolvido em  **React Native com Expo** **, projetado para conectar freelancers a clientes em busca de serviços. A plataforma facilita a publicação de projetos, a busca por profissionais qualificados e a gestão de propostas, tornando o processo de contratação e execução de trabalhos mais eficiente.**
+O **NeraK** é um aplicativo móvel desenvolvido em  **React Native com Expo** **, projetado para conectar freelancers a clientes em busca de serviços. A plataforma facilita a publicação de projetos, a busca por profissionais qualificados e a gestão de propostas, tornando o processo de contratação e execução de trabalhos mais eficiente.**
 
 ## 🚀 Funcionalidades
 
